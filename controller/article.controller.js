@@ -12,9 +12,9 @@ Data :-
 */
 export const createArticle = async (request, response) => {
   try {
-    const { title, content, category, status, shortDescription } = request.body;
+    const { title, content, category, status, author,shortDescription } = request.body;
     const images = request.files?.map(file => file.filename) || [];
-    const author = request.user.id;
+    
 
     // Calculate estimated read time (words / 200 words per minute)
     const wordCount = content.trim().split(/\s+/).length;

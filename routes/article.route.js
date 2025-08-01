@@ -14,7 +14,7 @@ router.get("/:id", auth, isUser, seeArticleById);
 router.put("/:id", auth, isUser, upload.array("images"), updateArticle);
 router.delete("/:id", auth, isUser, deleteArticle);
 router.get("/search", auth, isUser, getAllArticlesByTitle);
-router.get("/author/:authorId", auth, isUser, seeArticleByAuthor);
+router.get("/author/:authorId", seeArticleByAuthor);
 router.get("/category/:category", auth, isUser, seeArticlesByCategory);
 router.get("/date", auth, isUser, seeArticlesByDate);
 router.get("/keyword", auth, isUser, seeArticlesByKeyword);
