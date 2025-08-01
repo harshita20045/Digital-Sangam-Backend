@@ -146,7 +146,7 @@ export const getUserById = async (request, response) => {
     if (!user) return response.status(404).json({ message: "User not found" });
 
     if (user.profile.imageName)
-      user.profile.imageName = `http://localhost:3000/profile/${user.profile.imageName}`;
+      user.profile.imageName = `https://digital-sangam-backend.onrender.com/${user.profile.imageName}`;
 
     return response.status(200).json({ user });
   } catch (error) {
@@ -228,7 +228,7 @@ const sendEmail = (email, name) => {
       subject: "Account Verification",
       html: `<h4>Dear ${name}</h4>
         <p>Thank you for registration. To verify account please click on below button</p>
-        <form method="post" action="http://localhost:3000/user/verification">
+        <form method="post" action="https://digital-sangam-backend.onrender.com/user/verification">
           <input type="hidden" name="email" value="${email}"/>
           <button type="submit" style="background-color: blue; color:white; width:200px; border: none; border-radius:10px;">Verify</button>
         </form>
