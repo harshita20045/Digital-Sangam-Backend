@@ -1,33 +1,32 @@
 import mongoose from "mongoose";
 let dialectSchema = new mongoose.Schema(
   {
-   word: {
+    word: {
       type: String,
       required: true,
       trim: true,
       minLength: 2,
       maxLength: 100,
     },
-   meaning: {
+    meaning: {
       type: String,
       required: true,
       trim: true,
     },
-   language: {
-      type: String,
+    language: {
+      type:String,
       required: true,
-      trim: true,
     },
     example: {
-        type: String,
-        required: true,
-        trim: true,
-      },
-      author: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "user",
-        required: true,
-      },
+      type: String,
+      required: true,
+      trim: true,
+    },
+    author: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "user",
+      required: true,
+    },
 
     status: {
       type: String,
@@ -40,7 +39,6 @@ let dialectSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
-
   },
   {
     timestamps: true,

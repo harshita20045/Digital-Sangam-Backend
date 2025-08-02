@@ -11,19 +11,16 @@ createDialect,
   
 } from "../controller/dialect.controller.js";
 import { auth, isAdmin } from "../middleware/auth.js";
-import { createArticle } from "../controller/article.controller.js";
+
 
 const router = express.Router();
 
-// User Routes
-router.post("/add", auth,createArticle);
+router.post("/add", auth,createDialect);
 router.get("/my", auth, getUserDialects);
-router.get("/all", auth, getAllDialects);
+router.get("/all",  getAllDialects);
 router.put("/update/:id", auth, updateDialectStatus);
 router.delete("/delete/:id", auth, deleteDialect);
 
-// Admin Routes
-router.get("/all", auth, isAdmin, getAllDialects);
 
 router.patch("/approve/:id", auth, isAdmin, getApprovedDialects);
 

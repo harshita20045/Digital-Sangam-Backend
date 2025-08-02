@@ -62,13 +62,22 @@ export const login = async (request, response) => {
     if (!user.isVerified)
       return response.status(401).json({ error: "Account not verified" });
 
+    if (request.url.includes("/admin") && user.role !== "admin") {
+      return response.status(403).json({ error: "Unauthorized access" });
+    }
+
     const passwordCompare = await bcrypt.compare(password, user.password);
     if (!passwordCompare)
       return response.status(400).json({ error: "Invalid Password" });
 
     user.password = undefined;
     const token = generateToken(user.id, user.email, user.role);
-    response.cookie("token", token);
+    response.cookie("token", token, {
+      httpOnly: true,
+      secure: false,
+      sameSite: "Lax",
+      maxAge: 24 * 60 * 60 * 1000,
+    });
 
     return response.status(200).json({ message: "Login successful", user });
   } catch (error) {
@@ -146,7 +155,7 @@ export const getUserById = async (request, response) => {
     if (!user) return response.status(404).json({ message: "User not found" });
 
     if (user.profile.imageName)
-      user.profile.imageName = `https://digital-sangam-backend.onrender.com/${user.profile.imageName}`;
+      user.profile.imageName = `http://localhost:3000/profile/${user.profile.imageName}`;
 
     return response.status(200).json({ user });
   } catch (error) {
@@ -228,7 +237,7 @@ const sendEmail = (email, name) => {
       subject: "Account Verification",
       html: `<h4>Dear ${name}</h4>
         <p>Thank you for registration. To verify account please click on below button</p>
-        <form method="post" action="https://digital-sangam-backend.onrender.com/user/verification">
+        <form method="post" action="http://localhost:3000/user/verification">
           <input type="hidden" name="email" value="${email}"/>
           <button type="submit" style="background-color: blue; color:white; width:200px; border: none; border-radius:10px;">Verify</button>
         </form>

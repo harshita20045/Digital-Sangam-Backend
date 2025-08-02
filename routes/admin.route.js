@@ -1,19 +1,36 @@
 import express from "express";
-import { createArticle, deleteArticle, getAllArticlesByTitle, seeAllArticles, seeArticleByAuthor, seeArticleById, seeArticlesByAuthorAndCategory, seeArticlesByCategory, seeArticlesByDate, seeArticlesByKeyword, seeMyArticles, updateArticle } from "../controller/article.controller.js";
-import multer from "multer";
-import { auth, isAdmin } from "../middleware/auth.js";
+import {
+  getAllDialects,
+  updateDialectStatus,
+  deleteDialect,
+  getApprovedDialects,
+  createLanguage,
+  getAllLanguage,
+  deleteLanguage,
+  getAllArticles,
+  getAdminStats,
+  updateArticleStatus,
+} from "../controller/admin.controller.js";
+import { login } from "../controller/user.controller.js";
+
 const router = express.Router();
-const upload = multer({ dest: "public/article" });
-router.post("/", auth, isAdmin, upload.array("images"), createArticle);
-router.get("/my-articles", auth, isAdmin, seeMyArticles);
-router.get("/all", auth, isAdmin, seeAllArticles);
-router.get("/:id", auth, isAdmin, seeArticleById);
-router.put("/:id", auth, isAdmin, upload.array("images"), updateArticle);
-router.delete("/:id", auth, isAdmin, deleteArticle);
-router.get("/search", auth, isAdmin, getAllArticlesByTitle);
-router.get("/author/:authorId", auth, isAdmin, seeArticleByAuthor);
-router.get("/category/:category", auth, isAdmin, seeArticlesByCategory);
-router.get("/date", auth, isAdmin, seeArticlesByDate);
-router.get("/keyword", auth, isAdmin, seeArticlesByKeyword);
-router.get("/author/:authorId/category/:category", auth, isAdmin, seeArticlesByAuthorAndCategory);
+
+router.post("/login", login);
+router.get("/dialects", getAllDialects);
+router.get("/stats", getAdminStats);
+router.get("/articles", getAllArticles);
+router.put("/update-articles/:id", updateArticleStatus);
+
+router.put("/update-dialects/:id", updateDialectStatus);
+
+router.delete("/delete-dialects/:id", deleteDialect);
+
+router.get("/dialects/approved", getApprovedDialects);
+
+router.post("/languages", createLanguage);
+
+router.get("/languages", getAllLanguage);
+
+router.delete("/languages/:id", deleteLanguage);
+
 export default router;

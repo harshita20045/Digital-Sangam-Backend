@@ -1,18 +1,26 @@
 import { Dialect } from "../models/dialect.model.js";
 
-// ------------------ USER APIs ------------------
 
 export const createDialect = async (req, res) => {
   try {
-    const { word, meaning, language, example, audioLink } = req.body;
+    const { word, meaning, language, author, example } = req.body;
+    const audioFile = req.file; // multer adds this
+
+    if (!word || !meaning || !language || !author || !example || !audioFile) {
+      return res.status(400).json({ error: "All fields including audio file are required." });
+    }
+
+    const audioPath = `/uploads/audio/${audioFile.filename}`;
+
     const dialect = await Dialect.create({
-      word,
-      meaning,
-      language,
-      example,
-      audioLink,
-      author: req.user.id, 
+      word: word.trim(),
+      meaning: meaning.trim(),
+      language: language.trim(),
+      example: example.trim(),
+      audioLink: audioPath,
+      author,
     });
+
     res.status(201).json({ message: "Dialect submitted for review", dialect });
   } catch (err) {
     console.error(err);
@@ -20,7 +28,7 @@ export const createDialect = async (req, res) => {
   }
 };
 
-// View all dialects by the current user
+
 export const getUserDialects = async (req, res) => {
   try {
     const dialects = await Dialect.find({ author: req.user.id });
@@ -35,9 +43,8 @@ export const getUserDialects = async (req, res) => {
 
 export const getAllDialects = async (req, res) => {
   try {
-    const { status } = req.query;
-    const query = status ? { status } : {};
-    const dialects = await Dialect.find(query).populate("author", "name email");
+   
+    const dialects = await Dialect.find().populate("author", "name email");
     res.status(200).json({ dialects });
   } catch (err) {
     res.status(500).json({ error: "Error fetching dialects" });
@@ -63,7 +70,6 @@ export const updateDialectStatus = async (req, res) => {
   }
 };
 
-// Delete dialect (admin only)
 export const deleteDialect = async (req, res) => {
   try {
     const { id } = req.params;
