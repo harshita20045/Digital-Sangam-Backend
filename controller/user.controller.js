@@ -155,7 +155,7 @@ export const getUserById = async (request, response) => {
     if (!user) return response.status(404).json({ message: "User not found" });
 
     if (user.profile.imageName)
-      user.profile.imageName = `http://localhost:3000/profile/${user.profile.imageName}`;
+      user.profile.imageName = `https://digital-sangam-backend.onrender.com/profile/${user.profile.imageName}`;
 
     return response.status(200).json({ user });
   } catch (error) {
