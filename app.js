@@ -15,7 +15,7 @@ import cors from "cors"
 dotenv.config();
 const app = express();
 app.use(cors({
-  origin: "http://localhost:3001", 
+  origin: "https://digital-sangam-frontend.onrender.com", 
   credentials: true               
 }));
 
