@@ -28,8 +28,7 @@ export const getAllLanguage = async (request, response, next) => {
 
 export const deleteLanguage = async (request, response, next) => {
   try {
-    
-    let language=await Language.deleteOne({id})
+    let language = await Language.deleteOne({ id });
   } catch (error) {
     console.log(error);
     return response.status(500).json({ message: "Internal Server Error" });

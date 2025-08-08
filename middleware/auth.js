@@ -7,7 +7,9 @@ export const auth = (request, response, next) => {
   const { token } = request.cookies;
 
   if (!token) {
-    return response.status(401).json({ message: "Unauthorized User. Token not found." });
+    return response
+      .status(401)
+      .json({ message: "Unauthorized User. Token not found." });
   }
 
   try {
@@ -15,14 +17,18 @@ export const auth = (request, response, next) => {
     request.user = decoded; // Attaches user info (including role) to request
     next();
   } catch (err) {
-    return response.status(401).json({ message: "Unauthorized User. Invalid token." });
+    return response
+      .status(401)
+      .json({ message: "Unauthorized User. Invalid token." });
   }
 };
 
 // Middleware to check for admin role
 export const isAdmin = (request, response, next) => {
   if (request.user.role !== "admin") {
-    return response.status(403).json({ message: "Admins only. Access denied." });
+    return response
+      .status(403)
+      .json({ message: "Admins only. Access denied." });
   }
   next();
 };

@@ -20,7 +20,7 @@ let articleSchema = new mongoose.Schema(
       maxLength: 300,
     },
     readTime: {
-      type: Number, 
+      type: Number,
       required: true,
     },
     category: {

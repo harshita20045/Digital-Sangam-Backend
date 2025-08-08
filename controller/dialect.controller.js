@@ -1,13 +1,14 @@
 import { Dialect } from "../models/dialect.model.js";
 
-
 export const createDialect = async (req, res) => {
   try {
     const { word, meaning, language, author, example } = req.body;
     const audioFile = req.file; // multer adds this
 
     if (!word || !meaning || !language || !author || !example || !audioFile) {
-      return res.status(400).json({ error: "All fields including audio file are required." });
+      return res
+        .status(400)
+        .json({ error: "All fields including audio file are required." });
     }
 
     const audioPath = `/uploads/audio/${audioFile.filename}`;
@@ -28,7 +29,6 @@ export const createDialect = async (req, res) => {
   }
 };
 
-
 export const getUserDialects = async (req, res) => {
   try {
     const dialects = await Dialect.find({ author: req.user.id });
@@ -40,10 +40,8 @@ export const getUserDialects = async (req, res) => {
 
 // ------------------ ADMIN APIs ------------------
 
-
 export const getAllDialects = async (req, res) => {
   try {
-   
     const dialects = await Dialect.find().populate("author", "name email");
     res.status(200).json({ dialects });
   } catch (err) {
@@ -80,7 +78,6 @@ export const deleteDialect = async (req, res) => {
   }
 };
 
-
 export const getApprovedDialects = async (req, res) => {
   try {
     const dialects = await Dialect.find({ status: "approved" });
@@ -89,4 +86,3 @@ export const getApprovedDialects = async (req, res) => {
     res.status(500).json({ error: "Error fetching approved dialects" });
   }
 };
-

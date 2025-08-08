@@ -1,4 +1,4 @@
-import {QuizAttempt} from "../models/quiz_attempt.model.js"
+import { QuizAttempt } from "../models/quiz_attempt.model.js";
 
 export const submitQuizAttempt = async (req, res) => {
   try {
@@ -12,7 +12,9 @@ export const submitQuizAttempt = async (req, res) => {
 
 export const getMyAttempts = async (req, res) => {
   try {
-    const attempts = await QuizAttempt.find({ userId: req.user.id }).populate("quizId");
+    const attempts = await QuizAttempt.find({ userId: req.user.id }).populate(
+      "quizId"
+    );
     return res.status(200).json({ attempts });
   } catch (err) {
     return res.status(500).json({ error: "Internal Server Error" });
@@ -21,7 +23,9 @@ export const getMyAttempts = async (req, res) => {
 
 export const getAttemptsByQuiz = async (req, res) => {
   try {
-    const attempts = await QuizAttempt.find({ quizId: req.params.quizId }).populate("userId");
+    const attempts = await QuizAttempt.find({
+      quizId: req.params.quizId,
+    }).populate("userId");
     return res.status(200).json({ attempts });
   } catch (err) {
     return res.status(500).json({ error: "Internal Server Error" });
@@ -30,7 +34,9 @@ export const getAttemptsByQuiz = async (req, res) => {
 
 export const getAttemptById = async (req, res) => {
   try {
-    const attempt = await QuizAttempt.findById(req.params.attemptId).populate("userId quizId");
+    const attempt = await QuizAttempt.findById(req.params.attemptId).populate(
+      "userId quizId"
+    );
     return res.status(200).json({ attempt });
   } catch (err) {
     return res.status(500).json({ error: "Internal Server Error" });

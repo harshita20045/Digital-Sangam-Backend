@@ -68,8 +68,8 @@ const userSchema = new mongoose.Schema(
       socialLinks: {
         linkedin: String,
         twitter: String,
-        facebook:String,
-        instagram:String,
+        facebook: String,
+        instagram: String,
       },
     },
   },

@@ -14,7 +14,7 @@ let dialectSchema = new mongoose.Schema(
       trim: true,
     },
     language: {
-      type:String,
+      type: String,
       required: true,
     },
     example: {
