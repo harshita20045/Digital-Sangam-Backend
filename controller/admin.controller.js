@@ -3,12 +3,13 @@ import { Dialect } from "../models/dialect.model.js";
 import { Language } from "../models/language.model.js";
 import { User } from "../models/user.model.js";
 
+
 export const getAllArticles = async (req, res) => {
   try {
     const articles = await Article.find().populate("author", "name email");
     res.status(200).json({ articles });
   } catch (error) {
-    console.log(error);
+    console.log(error)
     res.status(500).json({ message: "Error fetching articles" });
   }
 };
@@ -37,26 +38,28 @@ export const updateArticleStatus = async (req, res) => {
     if (!["approved", "rejected"].includes(status)) {
       return res.status(400).json({ error: "Invalid status" });
     }
-    const article = await Article.findByIdAndUpdate(
-      id,
-      { status },
-      { new: true }
-    );
+    const article = await Article.findByIdAndUpdate(id, { status }, { new: true });
     res.status(200).json({ message: `Article ${status}`, article });
   } catch (err) {
-    console.log(err);
+    console.log(err)
     res.status(500).json({ error: "Failed to update article status" });
   }
 };
 
+
+
+
+
 export const getAllDialects = async (req, res) => {
   try {
+   
     const dialects = await Dialect.find().populate("author", "name email");
     res.status(200).json({ dialects });
   } catch (err) {
     res.status(500).json({ error: "Error fetching dialects" });
   }
 };
+
 
 export const updateDialectStatus = async (req, res) => {
   try {
@@ -86,6 +89,7 @@ export const deleteDialect = async (req, res) => {
   }
 };
 
+
 export const getApprovedDialects = async (req, res) => {
   try {
     const dialects = await Dialect.find({ status: "approved" });
@@ -94,6 +98,7 @@ export const getApprovedDialects = async (req, res) => {
     res.status(500).json({ error: "Error fetching approved dialects" });
   }
 };
+
 
 export const createLanguage = async (request, response, next) => {
   try {

@@ -1,6 +1,8 @@
 import { User } from "../models/user.model.js";
 import bcrypt from "bcryptjs";
+import { validationResult } from "express-validator";
 import jwt from "jsonwebtoken";
+import mongoose from "mongoose";
 import nodemailer from "nodemailer";
 
 //      http://localhost:3000/user/signup   --------->post
@@ -21,8 +23,11 @@ export const signUp = async (request, response) => {
     if (user) {
       return response.status(400).json({ message: "User already exists" });
     }
+    console.log("Data Come");
     await sendEmail(email, name);
+    console.log("Email Send");
     await User.create({ name, email, password, contact, role });
+    console.log("Data Added");
 
     return response.status(201).json({ message: "Signup successful" });
   } catch (error) {
@@ -63,6 +68,9 @@ export const login = async (request, response) => {
       return response.status(401).json({ error: "Account not verified" });
 
     if (request.url.includes("/admin") && user.role !== "admin") {
+      return response.status(403).json({ error: "Unauthorized access" });
+    }
+    if (request.url.includes("/user") && user.role !== "user") {
       return response.status(403).json({ error: "Unauthorized access" });
     }
 
@@ -112,36 +120,82 @@ export const logout = (request, response) => {
 
 }
   */
-export const createProfile = async (request, response) => {
+export const updateProfile = async (request, response) => {
   try {
+    console.log("start");
     const user = await User.findById(request.params.userId);
     console.log(user);
+    console.log("url aa gaya");
     if (!user) return response.status(404).json({ message: "User not found" });
-    console.log(request.file.profileImage);
+    console.log("not found tak");
+    const errors = validationResult(request);
+    console.log("validation tak");
+    if (!errors.isEmpty())
+      return response
+        .status(400)
+        .json({ error: "Bad request", errorMessages: errors.array() });
+    console.log("validation check");
     console.log(request.body);
+    if (!user.profile) {
+      user.profile = {
+        address: "",
+        city: "",
+        state: "",
+        country: "",
+        dob: "",
+        bio: "",
+        designation: "",
+        profileImage: "",
+        socialLinks: {
+          linkedin: "",
+          twitter: "",
+          facebook: "",
+          instagram: "",
+        },
+      };
+    }
+
+    if (!user.profile.socialLinks) {
+      user.profile.socialLinks = {
+        linkedin: "",
+        twitter: "",
+        facebook: "",
+        instagram: "",
+      };
+    }
+
     user.name = request.body.name ?? user.name;
     user.contact = request.body.contact ?? user.contact;
-    user.profile.address = request.body.address;
-    user.profile.city = request.body.city;
-    user.profile.state = request.body.state;
-    user.profile.country = request.body.country;
-    user.profile.dob = request.body.dob;
-    user.profile.bio = request.body.bio;
-    user.profile.designation = request.body.designation;
-    user.profile.socialLinks.linkedin = request.body.linkedin;
-    user.profile.socialLinks.twitter = request.body.twitter;
-    user.profile.socialLinks.facebook = request.body.facebook;
-    user.profile.socialLinks.instagram = request.body.instagram;
 
+    user.profile.address = request.body.address ?? user.profile.address;
+    user.profile.country = request.body.country ?? user.profile.country;
+    user.profile.dob = request.body.dob ?? user.profile.dob;
+    user.profile.bio = request.body.bio ?? user.profile.bio;
+    user.profile.designation =
+      request.body.designation ?? user.profile.designation;
+
+    user.profile.socialLinks.linkedin =
+      request.body.linkedin ?? user.profile.socialLinks.linkedin;
+    user.profile.socialLinks.twitter =
+      request.body.twitter ?? user.profile.socialLinks.twitter;
+    user.profile.socialLinks.facebook =
+      request.body.facebook ?? user.profile.socialLinks.facebook;
+    user.profile.socialLinks.instagram =
+      request.body.instagram ?? user.profile.socialLinks.instagram;
+    console.log("data aa gaya");
     if (request.file) {
       user.profile.profileImage = request.file.filename;
     }
-
+    console.log("Connected DB:", mongoose.connection.name);
+    console.log("Saving user data:", user.toObject());
     await user.save();
+    console.log("Saved data in DB");
 
-    return response
-      .status(201)
-      .json({ message: "Profile updated successfully", user });
+    console.log("save ho gaya");
+    return response.status(200).json({
+      message: "Profile updated successfully",
+      user,
+    });
   } catch (err) {
     console.error(err);
     return response.status(500).json({ error: "Internal Server Error" });
@@ -155,7 +209,7 @@ export const getUserById = async (request, response) => {
     if (!user) return response.status(404).json({ message: "User not found" });
 
     if (user.profile.imageName)
-      user.profile.imageName = `https://digital-sangam-backend.onrender.com/profile/${user.profile.imageName}`;
+      user.profile.imageName = `http://localhost:3000/profile/${user.profile.imageName}`;
 
     return response.status(200).json({ user });
   } catch (error) {

@@ -1,28 +1,14 @@
 import mongoose from "mongoose";
-let commentSchema = new mongoose.Schema(
+
+const commentSchema = new mongoose.Schema(
   {
-    article: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "article",
-      required: true,
-    },
-    user: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "user",
-      required: true,
-    },
-    content: {
-      type: String,
-      required: true,
-      trim: true,
-      minLength: 2,
-      maxLength: 500,
-    },
+    article: { type: mongoose.Schema.Types.ObjectId, ref: "article", required: true },
+    author: { type: mongoose.Schema.Types.ObjectId, ref: "user", required: true },
+    content: { type: String, required: true, maxlength: 1000 },
+    parentComment: { type: mongoose.Schema.Types.ObjectId, ref: "comment", default: null },
   },
-  {
-    timestamps: true,
-  },
-  { versionKey: false }
+  { timestamps: true, versionKey: false }
 );
 
 export const Comment = mongoose.model("comment", commentSchema);
+

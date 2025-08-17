@@ -1,48 +1,49 @@
 import bcrypt from "bcryptjs";
 import mongoose from "mongoose";
+
 const userSchema = new mongoose.Schema(
   {
     name: {
       type: String,
       required: true,
       trim: true,
-      isAlpha: true,
-      minLength: 2,
-      maxLength: 100,
+      minlength: 2,
+      maxlength: 100,
+      validate: {
+        validator: (v) => /^[a-zA-Z\s]+$/.test(v),
+        message: "Name should contain only letters and spaces",
+      },
     },
     email: {
       type: String,
       required: true,
       unique: true,
       trim: true,
-      isEmail: true,
+      lowercase: true,
+      validate: {
+        validator: (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v),
+        message: "Invalid email format",
+      },
     },
     password: {
       type: String,
       required: true,
-      trim: true,
-      minLength: 8,
-      maxLength: 100,
-
-      set: (value) => {
-        console.log("setter executed...");
-        const saltKey = bcrypt.genSaltSync(12);
-        value = bcrypt.hashSync(value, saltKey);
-        return value;
-      },
+      minlength: 8,
+      maxlength: 100,
+      set: (value) => bcrypt.hashSync(value, bcrypt.genSaltSync(12)),
     },
     contact: {
       type: String,
-      isNumeric: true,
-      maxLength: 10,
       required: true,
       trim: true,
+      validate: {
+        validator: (v) => /^[0-9]{10}$/.test(v),
+        message: "Contact must be a 10-digit number",
+      },
     },
     role: {
       type: String,
       enum: ["admin", "user"],
-      required: true,
-      trim: true,
       default: "user",
     },
     isVerified: {
@@ -51,32 +52,55 @@ const userSchema = new mongoose.Schema(
     },
     badges: [
       {
-        badgename: {
-          type: String,
-        },
+        badgename: { type: String, default: "New" },
         badgeImage: {
           type: String,
+          default: "https://example.com/default-badge.png",
         },
       },
     ],
     profile: {
-      country: String,
-      dob: Date,
-      bio: String,
-      designation: String,
-      profileImage: String,
+      country: { type: String, default: "India" },
+      dob: { type: Date, default: null },
+      bio: {
+        type: String,
+        maxlength: 300,
+        default: "This user hasn't written a bio yet.",
+      },
+      designation: { type: String, default: "Cultural Enthusiast" },
+      profileImage: {
+        type: String,
+        default: "https://example.com/default-profile.png",
+      },
       socialLinks: {
-        linkedin: String,
-        twitter: String,
-        facebook: String,
-        instagram: String,
+        linkedin: {
+          type: String,
+          default: "",
+          validate: (v) =>
+            v === "" || /^https?:\/\/(www\.)?linkedin\.com\/.*$/.test(v),
+        },
+        twitter: {
+          type: String,
+          default: "",
+          validate: (v) =>
+            v === "" || /^https?:\/\/(www\.)?twitter\.com\/.*$/.test(v),
+        },
+        facebook: {
+          type: String,
+          default: "",
+          validate: (v) =>
+            v === "" || /^https?:\/\/(www\.)?facebook\.com\/.*$/.test(v),
+        },
+        instagram: {
+          type: String,
+          default: "",
+          validate: (v) =>
+            v === "" || /^https?:\/\/(www\.)?instagram\.com\/.*$/.test(v),
+        },
       },
     },
   },
-  {
-    timestamps: true,
-    versionKey: false,
-  }
+  { timestamps: true, versionKey: false }
 );
 
 export const User = mongoose.model("user", userSchema);
