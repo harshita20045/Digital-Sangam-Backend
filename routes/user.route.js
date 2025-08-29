@@ -14,6 +14,7 @@ import {
   updateProfile,
 } from "../controller/user.controller.js";
 import { body } from "express-validator";
+import passport from "passport";
 
 const upload = multer({ dest: "public/profile" });
 const router = express.Router();
@@ -22,6 +23,18 @@ router.post("/signup", signUp);
 router.post("/verification", verifyAccount);
 router.post("/login", login);
 router.get("/logout", logout);
+
+
+router.get("/auth/google",
+  passport.authenticate("google", { scope: ["profile", "email"] })
+);
+router.get("/auth/google/callback",
+  passport.authenticate("google", { failureRedirect: "/signup" }),
+  (req, res) => {
+    
+    res.redirect("https://digital-sangam-frontend.onrender.com/");
+  }
+);
 
 router.get("/search", auth, isUser, getAllUserByName);
 router.patch(
