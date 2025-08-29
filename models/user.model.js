@@ -8,7 +8,7 @@ const userSchema = new mongoose.Schema(
       required: true,
       trim: true,
       minlength: 2,
-      maxlength: 100,
+      maxlength: 50,
       validate: {
         validator: (v) => /^[a-zA-Z\s]+$/.test(v),
         message: "Name should contain only letters and spaces",
@@ -70,7 +70,7 @@ const userSchema = new mongoose.Schema(
       designation: { type: String, default: "Cultural Enthusiast" },
       profileImage: {
         type: String,
-        default: "https://example.com/default-profile.png",
+        default: "https://uxwing.com/wp-content/themes/uxwing/download/peoples-avatars/default-profile-picture-male-icon.png",
       },
       socialLinks: {
         linkedin: {
