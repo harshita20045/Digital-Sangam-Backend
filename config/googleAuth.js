@@ -5,13 +5,22 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
+
+console.log("Google profile:", profile);
+console.log("Google Client ID:", process.env.GOOGLE_CLIENT_ID);
+console.log("Google Secret:", process.env.GOOGLE_CLIENT_SECRET ? "Loaded ✅" : "Missing ❌");
+
 passport.use(new GoogleStrategy({
+  
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     callbackURL: "https://digital-sangam-backend.onrender.com/user/auth/google/callback"
   },
+   
   async function(accessToken, refreshToken, profile, done) {
     try {
+      console.log("Google profile:", profile);
+       
       let user = await User.findOne({ googleId: profile.id });
       if (!user) {
         user = await User.create({
