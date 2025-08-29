@@ -5,7 +5,7 @@ import { User } from "../models/user.model.js";
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: "https://digital-sangam-backend.onrender.com/auth/google/callback"
+    callbackURL: "https://digital-sangam-backend.onrender.com/user/auth/google/callback"
   },
   async function(accessToken, refreshToken, profile, done) {
     try {

@@ -13,6 +13,10 @@ import speechRouter from "./routes/speech.route.js";
 import likeRouter from "./routes/like.route.js";
 import cookieParser from "cookie-parser";
 import cors from "cors"
+import passport from "passport";
+import session from "express-session";
+import "./config/googleAuth.js"; 
+
 
 dotenv.config();
 const app = express();
@@ -20,6 +24,18 @@ app.use(cors({
   origin: "https://digital-sangam-frontend.onrender.com", 
   credentials: true               
 }));
+
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET || "secret",
+    resave: false,
+    saveUninitialized: false,
+  })
+);
+
+app.use(passport.initialize());
+app.use(passport.session());
+
 
 mongoose
   .connect(process.env.DB_URL)
