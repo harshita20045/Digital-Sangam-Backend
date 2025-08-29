@@ -6,7 +6,6 @@ import dotenv from "dotenv";
 dotenv.config();
 
 
-console.log("Google profile:", profile);
 console.log("Google Client ID:", process.env.GOOGLE_CLIENT_ID);
 console.log("Google Secret:", process.env.GOOGLE_CLIENT_SECRET ? "Loaded ✅" : "Missing ❌");
 
