@@ -27,7 +27,7 @@ const userSchema = new mongoose.Schema(
     },
     password: {
       type: String,
-      required: true,
+      
       minlength: 8,
       maxlength: 100,
       set: (value) => bcrypt.hashSync(value, bcrypt.genSaltSync(12)),
