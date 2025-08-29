@@ -20,10 +20,7 @@ import "./config/googleAuth.js";
 
 dotenv.config();
 const app = express();
-app.use(cors({
-  origin: "https://digital-sangam-frontend.onrender.com", 
-  credentials: true               
-}));
+app.use(cors());
 
 app.use(
   session({
