@@ -12,6 +12,8 @@ import {
   seeArticlesByKeyword,
   seeArticlesByAuthorAndCategory,
   getAllArticlesByTitle,
+  likeArticle,
+  getArticleLikes,
 } from "../controller/article.controller.js";
 
 import { auth, isUser } from "../middleware/auth.js";
@@ -32,5 +34,7 @@ router.get("/category/:category", auth, isUser, seeArticlesByCategory);
 router.get("/date", auth, isUser, seeArticlesByDate);
 router.get("/keyword", auth, isUser, seeArticlesByKeyword);
 router.get("/author/:authorId/category/:category", auth, isUser, seeArticlesByAuthorAndCategory);
+router.post("/like/:id", auth, isUser, likeArticle);
+router.get("/likes/:articleId", auth, isUser, getArticleLikes);
 
 export default router;

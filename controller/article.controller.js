@@ -243,4 +243,60 @@ export const getAllArticlesByTitle = async (request, response) => {
 }
 
 
+export const likeArticle = async (request, response) => {
+    try {
+        const { id } = request.params;
+        const { userId } = request.body; 
 
+      console.log("User ID:", userId);
+        const article = await Article.findById(id);
+        console.log(article);
+        if (!article) {
+            return response.status(404).json({ message: "Article not found" });
+        }
+
+        const userLikedIndex = article.likes.indexOf(userId);
+
+        if (userLikedIndex === -1) {
+           
+            article.likes.push(userId);
+        } else {
+            
+            article.likes.splice(userLikedIndex, 1);
+        }
+
+        await article.save();
+
+        return response.status(200).json({
+            numberOfLikes: article.likes.length,
+            liked: userLikedIndex === -1, 
+        });
+    } catch (error) {
+        console.error(error);
+        return response.status(500).json({ message: "Internal server error" });
+    }
+};
+
+
+
+export const getArticleLikes = async (request, response) => {
+    try {
+        const { articleId } = request.params;
+        const { userId } = request.query;
+
+        const article = await Article.findById(articleId);
+        if (!article) {
+            return response.status(404).json({ message: "Article not found" });
+        }
+
+        const liked = article.likes.includes(userId);
+
+        return response.status(200).json({
+            numberOfLikes: article.likes.length,
+            liked: liked,
+        });
+    } catch (error) {
+        console.error(error);
+        return response.status(500).json({ message: "Internal server error" });
+    }
+};

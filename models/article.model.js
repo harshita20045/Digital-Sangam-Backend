@@ -9,6 +9,7 @@ const articleSchema = new mongoose.Schema(
     author: { type: mongoose.Schema.Types.ObjectId, ref: "user", required: true },
     status: { type: String, enum: ["pending", "approved", "rejected"], default: "pending" },
     images: [{ type: String }],
+    likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "user" }]
   },
   { timestamps: true, versionKey: false }
 );

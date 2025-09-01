@@ -58,41 +58,46 @@ Data :-
 }
 
 */
-export const login = async (request, response) => {
+export const login = async (req, res) => {
   try {
-    const { email, password } = request.body;
-    const user = await User.findOne({ email });
-    if (!user) return response.status(400).json({ error: "User not found" });
+    const { email, password } = req.body;
 
-    if (!user.isVerified)
-      return response.status(401).json({ error: "Account not verified" });
+    const user = await User.findOne({ email }).select("+password");
+    if (!user) return res.status(400).json({ error: "User not found" });
 
-    if (request.url.includes("/admin") && user.role !== "admin") {
-      return response.status(403).json({ error: "Unauthorized access" });
-    }
-    if (request.url.includes("/user") && user.role !== "user") {
-      return response.status(403).json({ error: "Unauthorized access" });
+   
+    if (!user.isVerified) {
+      return res.status(401).json({ error: "Account not verified" });
     }
 
-    const passwordCompare = await bcrypt.compare(password, user.password);
-    if (!passwordCompare)
-      return response.status(400).json({ error: "Invalid Password" });
+   
+    const passwordMatch = await bcrypt.compare(password, user.password);
+    if (!passwordMatch) {
+      return res.status(400).json({ error: "Invalid password" });
+    }
 
-    user.password = undefined;
-    const token = generateToken(user.id, user.email, user.role);
-    response.cookie("token", token, {
+ 
+    const token = generateToken(user._id, user.email, user.role);
+
+    res.cookie("token", token, {
       httpOnly: true,
-      secure: false,
-      sameSite: "Lax",
-      maxAge: 24 * 60 * 60 * 1000,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      maxAge: 24 * 60 * 60 * 1000, 
     });
 
-    return response.status(200).json({ message: "Login successful", user });
+
+    const { _id, name, role, contact } = user;
+    return res.status(200).json({
+      message: "Login successful",
+      user: { id: _id, name, email, role, contact, profile: user.profile },
+    });
   } catch (error) {
-    console.log(error);
-    return response.status(500).json({ error: "Internal server error" });
+    console.error(error);
+    return res.status(500).json({ error: "Internal server error" });
   }
 };
+
 
 //     http://localhost:3000/user/logout   --------->get
 export const logout = (request, response) => {
@@ -209,7 +214,7 @@ export const getUserById = async (request, response) => {
     if (!user) return response.status(404).json({ message: "User not found" });
 
     if (user.profile.imageName)
-      user.profile.imageName = `http://localhost:3000/profile/${user.profile.imageName}`;
+      user.profile.imageName = `https://digital-sangam-frontend.onrender.com/profile/${user.profile.imageName}`;
 
     return response.status(200).json({ user });
   } catch (error) {
@@ -275,6 +280,23 @@ export const getAllUserByName = async (request, response) => {
   }
 };
 
+export const getAllUserByEmailId = async (req, res) => {
+  try {
+    const email = req.params.email;
+    const user = await User.findOne({ email });
+
+    if (user) {
+      res.status(200).json(user);
+    } else {
+      res.status(404).json({ message: "User not found" }); 
+    }
+  } catch (err) {
+    res.status(500).json({ message: err.message }); 
+  }
+};
+
+
+
 const sendEmail = (email, name) => {
   return new Promise((resolve, reject) => {
     const transporter = nodemailer.createTransport({
@@ -291,7 +313,7 @@ const sendEmail = (email, name) => {
       subject: "Account Verification",
       html: `<h4>Dear ${name}</h4>
         <p>Thank you for registration. To verify account please click on below button</p>
-        <form method="post" action="http://localhost:3000/user/verification">
+        <form method="post" action="https://digital-sangam-frontend.onrender.com/user/verification">
           <input type="hidden" name="email" value="${email}"/>
           <button type="submit" style="background-color: blue; color:white; width:200px; border: none; border-radius:10px;">Verify</button>
         </form>
