@@ -70,7 +70,7 @@ const userSchema = new mongoose.Schema(
       designation: { type: String, default: "Cultural Enthusiast" },
       profileImage: {
         type: String,
-        default: "https://uxwing.com/wp-content/themes/uxwing/download/peoples-avatars/default-profile-picture-male-icon.png",
+        default: "https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.vecteezy.com%2Ffree-vector%2Fprofile-picture&psig=AOvVaw2hGX--Q07NJ0hLN3rIdkGs&ust=1756798184615000&source=images&cd=vfe&opi=89978449&ved=0CBUQjRxqFwoTCICIq7GFt48DFQAAAAAdAAAAABAL",
       },
       socialLinks: {
         linkedin: {

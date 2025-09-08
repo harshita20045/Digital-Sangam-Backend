@@ -214,7 +214,7 @@ export const getUserById = async (request, response) => {
     if (!user) return response.status(404).json({ message: "User not found" });
 
     if (user.profile.imageName)
-      user.profile.imageName = `https://digital-sangam-frontend.onrender.com/profile/${user.profile.imageName}`;
+      user.profile.imageName = `https://digital-sangam-backend.onrender.com/profile/${user.profile.imageName}`;
 
     return response.status(200).json({ user });
   } catch (error) {
@@ -288,7 +288,7 @@ export const getAllUserByEmailId = async (req, res) => {
     if (user) {
       res.status(200).json(user);
     } else {
-      res.status(200).json({ message: "User not found", user: null });
+      res.status(200).json({ message: "User not found" , user: null}); 
     }
   } catch (err) {
     res.status(500).json({ message: err.message }); 
